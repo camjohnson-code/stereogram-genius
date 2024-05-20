@@ -10,7 +10,6 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen options={{ headerShown: false }} name="Home" component={LandingPage} />
-        <Stack.Screen options={{ headerShown: false }} name="NewScreen" component={NewScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
