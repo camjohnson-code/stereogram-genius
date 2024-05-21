@@ -22,7 +22,7 @@ export default function LandingPage({ navigation }) {
         <View>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => console.log('hello')} //navigation.navigate('Config')
             activeOpacity={1}
           >
             <Text style={styles.buttonText}>Get Started</Text>
