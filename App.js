@@ -1,4 +1,5 @@
 import React from 'react';
+import { StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LandingPage from './Screens/LandingPage';
@@ -9,6 +10,7 @@ const Tab = createBottomTabNavigator();
 function App() {
   return (
     <NavigationContainer>
+      <StatusBar barStyle="light-content" />
       <Tab.Navigator
         tabBar={(props) => {
           if (props.state.index === 0) return null;
