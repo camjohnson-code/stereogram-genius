@@ -1,8 +1,10 @@
 import React from 'react';
 import { StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
+import LandingPage from './Screens/LandingPage'
+import ResultsPage from './Screens/ResultsPage';
+import PatternsPage from './Screens/PatternsPage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import LandingPage from './Screens/LandingPage';
 import ConfigPage from './Screens/ConfigPage';
 
 const Tab = createBottomTabNavigator();
