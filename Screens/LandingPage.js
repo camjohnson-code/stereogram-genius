@@ -1,10 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Linking } from 'react-native';
 import LandingPageImage from '../assets/landing-page.png';
 
-export default function LandingPage({navigation}) {
+export default function LandingPage({ navigation }) {
   return (
     <View style={styles.container}>
+      <StatusBar style='light' />
       <View style={styles.imageContainer}>
         <Image
           source={LandingPageImage}
@@ -18,15 +19,23 @@ export default function LandingPage({navigation}) {
           Discover mesmerizing stereogram patterns, customize your viewing
           experience & dive into the world of 3D illusions...
         </Text>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('NewScreen')}
-          activeOpacity={1}
-        >
-          <Text style={styles.buttonText}>Get Started</Text>
-        </TouchableOpacity>
+        <View>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => console.log('hello')} //navigation.navigate('Config')
+            activeOpacity={1}
+          >
+            <Text style={styles.buttonText}>Get Started</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => Linking.openURL('https://youtu.be/Dh6wmaF9NhY?si=loBF6vtBtSmsQMVY')}
+            activeOpacity={1}
+          >
+            <Text style={styles.buttonText}>Learn How Stereograms Work</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <StatusBar style='auto' />
     </View>
   );
 }
@@ -34,7 +43,7 @@ export default function LandingPage({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: '#161616',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -52,7 +61,7 @@ const styles = StyleSheet.create({
   title: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 20
+    fontSize: 20,
   },
   text: {
     color: 'white',
@@ -62,6 +71,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#B427F1',
     padding: 15,
+    marginVertical: 5,
     borderRadius: 40,
     alignItems: 'center',
     justifyContent: 'center',
@@ -69,6 +79,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 16,
   },
 });
