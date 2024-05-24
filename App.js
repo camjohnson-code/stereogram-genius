@@ -36,21 +36,21 @@ function TabNavigator() {
       <Tab.Screen
         name="Config"
         component={ConfigPage}
-        options={{
-          tabBarLabel: 'Config',
+        options={{ headerShown: false,
+          tabBarLabel: 'Create',
         }}
       />
       <Tab.Screen
         name="Patterns"
         component={PatternsPage}
-        options={{
+        options={{ headerShown: false,
           tabBarLabel: 'Patterns',
         }}
       />
        <Tab.Screen
         name="Results"
         component={ResultsPage}
-        options={{
+        options={{ headerShown: false,
           tabBarLabel: 'Results',
         }}
       />
