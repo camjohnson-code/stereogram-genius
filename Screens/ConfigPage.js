@@ -27,7 +27,7 @@ const ConfigPage = ({ navigation, inputText, setInputText }) => {
             value={inputText}
             onChangeText={(text) => setInputText(text)}
           />
-          {error && <Text style={styles.errorText}>Please enter in some text</Text>}
+          {error && <Text style={styles.errorText}>Please enter in your text</Text>}
           <TouchableOpacity
             onPress={() => {
               if (inputText) {
