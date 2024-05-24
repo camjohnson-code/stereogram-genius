@@ -24,30 +24,53 @@ function ResultsPage({ route, inputText }) {
           align-items: center;
         }
         img {
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
+          width: 100vw;
+          height: 100vh;
+        }
+        p {
+          font-size: 4rem;
+          font-family: sans-serif;
+          text-align: center;
+          width: 75%;
+          font-weight: bold;
+        }
+        div {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
         }
       </style>
     </head>
     <body>
-      <script src="${EXPO_PUBLIC_STEREOGRAM_SCRIPT_URL}" type="text/javascript"></script>
-      <script src="${EXPO_PUBLIC_TEXT_DEPTHMAPPER_SCRIPT_URL}" type="text/javascript"></script>
-      <img id="stereogram" width="800" height="600" src />
+      <script src="${process.env.EXPO_PUBLIC_STEREOGRAM_SCRIPT_URL}" type="text/javascript"></script>
+      <script src="${process.env.EXPO_PUBLIC_TEXT_DEPTHMAPPER_SCRIPT_URL}" type="text/javascript"></script>
+      ${
+        inputText
+          ? '<img id="stereogram" src />'
+          : '<div><p>You have not entered your hidden word or picked a pattern.</p><p>Please go back and try again.</p></div>'
+      }
       <script>
-        Stereogram.render({
-          el: 'stereogram',
-          depthMapper: new Stereogram.TextDepthMapper('${inputText}')
-        });
+        ${
+          inputText
+            ? `
+          Stereogram.render({
+            el: 'stereogram',
+            depthMapper: new Stereogram.TextDepthMapper('${inputText}')
+          });
+        `
+            : ''
+        }
       </script>
     </body>
   </html>
 `;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <View style={styles.webviewContainer}>
         <TouchableWithoutFeedback
+          style={styles.touchable}
           onLongPress={() =>
             Alert.alert(
               'Image Options',
@@ -65,6 +88,7 @@ function ResultsPage({ route, inputText }) {
           }
         >
           <WebView
+            key={inputText}
             source={{ html: htmlContent }}
             style={styles.webview}
             javaScriptEnabled={true}
@@ -78,6 +102,7 @@ function ResultsPage({ route, inputText }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#161616',
   },
   webviewContainer: {
     flex: 1,
