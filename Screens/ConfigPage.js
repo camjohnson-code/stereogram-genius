@@ -8,18 +8,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-const ConfigPage = () => {
-  const [inputText, setInputText] = useState('');
-  const [showStereogram, setShowStereogram] = useState(false);
-
-  const handlePress = () => {
-    if (inputText) setShowStereogram(true);
-  };
-
-  const handleReset = () => {
-    setShowStereogram(false);
-    setInputText('');
-  };
+const ConfigPage = ({ navigation, inputText, setInputText }) => {
+  const [error, setError] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -31,13 +21,24 @@ const ConfigPage = () => {
         </Text>
         <View style={styles.inputContainer}>
           <TextInput
-            style={styles.textInput}
+            style={[styles.textInput, error ? styles.errorTextInput : null]}
             placeholder='Enter your hidden text'
             placeholderTextColor='rgba(255, 255, 255, 0.5)'
             value={inputText}
             onChangeText={(text) => setInputText(text)}
           />
-          <TouchableOpacity style={styles.button} activeOpacity={1}>
+          {error && <Text style={styles.errorText}>Please enter in some text</Text>}
+          <TouchableOpacity
+            onPress={() => {
+              if (inputText) {
+                navigation.navigate('TabNavigator', { screen: 'Result' });
+                setError(false);
+              }
+              else setError(true);
+            }}
+            style={styles.button}
+            activeOpacity={1}
+          >
             <Text style={styles.buttonText}>Submit</Text>
           </TouchableOpacity>
           <Text style={styles.dividerText}>or</Text>
@@ -82,7 +83,17 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingLeft: 20,
     marginVertical: 30,
-    width: '100%'
+    width: '100%',
+  },
+  errorTextInput: {
+    borderWidth: 1,
+    borderColor: 'red',
+    marginVertical: 0,
+    marginTop: 30,
+  },
+  errorText: {
+    color: 'white',
+    marginVertical: 10,
   },
   button: {
     backgroundColor: '#B427F1',

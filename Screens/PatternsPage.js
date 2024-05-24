@@ -1,37 +1,48 @@
 import React, { useState } from 'react';
 import {
   Image,
-  TouchableHighlight,
   Text,
   SafeAreaView,
   StyleSheet,
   FlatList,
-  View
-} from "react-native";
+  View,
+  TouchableOpacity,
+} from 'react-native';
 
-import bluesClues from "../assets/patterns/bluesclues.png";
-import hypnotize from "../assets/patterns/hypnotize.png";
-import party from "../assets/patterns/party.png";
-import rainbow from "../assets/patterns/rainbow.png";
+import bluesClues from '../assets/patterns/bluesclues.png';
+import hypnotize from '../assets/patterns/hypnotize.png';
+import party from '../assets/patterns/party.png';
+import rainbow from '../assets/patterns/rainbow.png';
 
 const patterns = [
-  { id: '1', source: bluesClues },
-  { id: '2', source: hypnotize },
-  { id: '3', source: party },
-  { id: '4', source: rainbow },
+  { id: '1', name: 'bluesClues', source: bluesClues },
+  { id: '2', name: 'hypnotize', source: hypnotize },
+  { id: '3', name: 'party', source: party },
+  { id: '4', name: 'rainbow', source: rainbow },
 ];
 
-function PatternsPage() {
+function PatternsPage({ navigation, selectedPhoto, setSelectedPhoto }) {
   const [selectedId, setSelectedId] = useState();
 
   const renderItem = ({ item }) => {
     const borderColor = item.id === selectedId ? 'purple' : 'transparent';
 
     return (
-      <TouchableHighlight onPress={() => setSelectedId(item.id)} style={{borderColor, borderWidth: 5, borderRadius: 10}}>
+      <TouchableOpacity
+        onPress={() => {
+          setSelectedId(item.id);
+          setSelectedPhoto(item.source);
+        }}
+        activeOpacity={1}
+        style={{ borderColor, borderWidth: 5, borderRadius: 10 }}
+      >
         <Image source={item.source} style={styles.image} />
-      </TouchableHighlight>
+      </TouchableOpacity>
     );
+  };
+
+  const handleGeneration = () => {
+    navigation.navigate('Result', { selectedPhoto: selectedPhoto });
   };
 
   return (
@@ -45,14 +56,15 @@ function PatternsPage() {
         extraData={selectedId}
       />
       <View style={styles.buttonContainer}>
-        <TouchableHighlight
+        <TouchableOpacity
           style={styles.buttonText}
-          onPress={() => console.log("Generate Pattern")}
+          onPress={() => handleGeneration()}
+          activeOpacity={1}
         >
-          <Text style={{ color: "white", fontSize: 18, fontWeight: "bold" }}>
+          <Text style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>
             Generate
           </Text>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -61,9 +73,10 @@ function PatternsPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000000",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#161616',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 40,
   },
   image: {
     width: 150,
@@ -72,21 +85,21 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   header: {
-    color: "white",
+    color: 'white',
     fontSize: 36,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginTop: 10,
-    marginBottom: 0
+    marginBottom: 0,
   },
   buttonText: {
     margin: 10,
-    borderColor: "purple",
-    backgroundColor: "purple",
+    borderColor: 'purple',
+    backgroundColor: 'purple',
     borderWidth: 1,
     borderRadius: 30,
     paddingVertical: 10,
     paddingHorizontal: 90,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: 60,
   },
   buttonContainer: {
