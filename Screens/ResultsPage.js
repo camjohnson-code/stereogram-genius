@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   TouchableWithoutFeedback,
   View,
   Alert,
+  Text,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
+import { Asset } from 'expo-asset';
 
-function ResultsPage({ route, inputText }) {
-  // const { selectedPhoto } = route.params;
+function ResultsPage({ inputText }) {
   const htmlContent = `
   <html>
     <head>
@@ -43,27 +44,31 @@ function ResultsPage({ route, inputText }) {
       </style>
     </head>
     <body>
-      <script src="${process.env.EXPO_PUBLIC_STEREOGRAM_SCRIPT_URL}" type="text/javascript"></script>
-      <script src="${process.env.EXPO_PUBLIC_TEXT_DEPTHMAPPER_SCRIPT_URL}" type="text/javascript"></script>
+    <script src="${
+      process.env.EXPO_PUBLIC_STEREOGRAM_SCRIPT_URL
+    }" type="text/javascript"></script>
+    <script src="${
+      process.env.EXPO_PUBLIC_TEXT_DEPTHMAPPER_SCRIPT_URL
+    }" type="text/javascript"></script>
+    ${
+      inputText
+        ? `<img id="stereogram" src />`
+        : '<div><p>You have not entered your hidden word.</p><p>Please go back and try again.</p></div>'
+    }
+    <script>
       ${
         inputText
-          ? '<img id="stereogram" src />'
-          : '<div><p>You have not entered your hidden word or picked a pattern.</p><p>Please go back and try again.</p></div>'
+          ? `
+        Stereogram.render({
+          el: 'stereogram',
+          depthMapper: new Stereogram.TextDepthMapper('${inputText}'),
+        });
+      `
+          : ''
       }
-      <script>
-        ${
-          inputText
-            ? `
-          Stereogram.render({
-            el: 'stereogram',
-            depthMapper: new Stereogram.TextDepthMapper('${inputText}')
-          });
-        `
-            : ''
-        }
-      </script>
-    </body>
-  </html>
+    </script>
+  </body>
+</html>
 `;
 
   return (
@@ -109,6 +114,11 @@ const styles = StyleSheet.create({
   },
   webview: {
     flex: 1,
+  },
+  placeholder: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
