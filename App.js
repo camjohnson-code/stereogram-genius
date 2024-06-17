@@ -7,6 +7,8 @@ import LandingPage from './Screens/LandingPage';
 import ResultsPage from './Screens/ResultsPage';
 import PatternsPage from './Screens/PatternsPage';
 import ConfigPage from './Screens/ConfigPage';
+import { MaterialIcons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -57,10 +59,13 @@ function TabNavigator({
         }}
       >
         <Tab.Screen
-          name='Config'
+          name='Text'
           options={{
-            tabBarLabel: 'Config',
+            tabBarLabel: 'Configure',
             headerShown: false,
+            tabBarIcon: ({ color, size }) => (
+              <MaterialIcons name='create' size={size} color={color} />
+            ),
           }}
         >
           {(props) => (
@@ -74,7 +79,7 @@ function TabNavigator({
         {/* <Tab.Screen
           name='Patterns'
           options={{
-            tabBarLabel: 'Patterns',
+            tabBarLabel: 'Pattern',
             headerShown: false,
           }}
         >
@@ -91,6 +96,9 @@ function TabNavigator({
           options={{
             tabBarLabel: 'Result',
             headerShown: false,
+            tabBarIcon: ({ color, size }) => (
+              <AntDesign name='picture' size={size} color={color} />
+            ),
           }}
         >
           {(props) => <ResultsPage {...props} inputText={inputText} />}
