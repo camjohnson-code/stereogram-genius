@@ -7,9 +7,19 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
+import { generate, count } from "random-words";
 
 const ConfigPage = ({ navigation, inputText, setInputText }) => {
   const [error, setError] = useState(false);
+
+  const generateRandomWord = () => {
+    const word = generate({ maxLength: 8 })
+
+    setInputText(word);
+    setError(false);
+
+    navigation.navigate('TabNavigator', { screen: 'Result' });
+  }
 
   return (
     <View style={styles.container}>
@@ -42,7 +52,7 @@ const ConfigPage = ({ navigation, inputText, setInputText }) => {
             <Text style={styles.buttonText}>Submit</Text>
           </TouchableOpacity>
           <Text style={styles.dividerText}>or</Text>
-          <TouchableOpacity style={styles.button} activeOpacity={1}>
+          <TouchableOpacity onPress={generateRandomWord} style={styles.button} activeOpacity={1}>
             <Text style={styles.buttonText}>Random Stereogram</Text>
           </TouchableOpacity>
         </View>
