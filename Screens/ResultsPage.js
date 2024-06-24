@@ -1,43 +1,125 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, SafeAreaView, Text, View, Image, TouchableOpacity, TouchableWithoutFeedback, Alert } from 'react-native';
-import blueClue from '../assets/patterns/bluesclues.png';
+import React, { useEffect, useState } from 'react';
+import {
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+  Alert,
+  Text,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { WebView } from 'react-native-webview';
+import { Asset } from 'expo-asset';
 
-function ResultsPage(){
-  return (
-    <SafeAreaView style={styles.container} >
-      <TouchableWithoutFeedback 
-        onLongPress={() => 
-          Alert.alert(
-            'Image Options',
-            'Choose an option',
-            [
-              {text: 'Save', onPress: () => console.log('Save Pressed')},
-              {text: 'Exit', onPress: () => console.log('Exit Pressed'), style: 'cancel'},
-            ],
-            { cancelable: true }
-          )
+function ResultsPage({ inputText }) {
+  const htmlContent = `
+  <html>
+    <head>
+      <style>
+        body {
+          background-color: #161616;
+          color: white;
+          width: 100vw;
+          height: 100vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
-      >
-        <Image 
-          source={blueClue}
-          style={styles.resultImage}
-        />
-      </TouchableWithoutFeedback>
-    </ SafeAreaView>
+        img {
+          width: 100vw;
+          height: 100vh;
+        }
+        p {
+          font-size: 4rem;
+          font-family: sans-serif;
+          text-align: center;
+          width: 75%;
+          font-weight: bold;
+        }
+        div {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        }
+      </style>
+    </head>
+    <body>
+    <script src="${
+      process.env.EXPO_PUBLIC_STEREOGRAM_SCRIPT_URL
+    }" type="text/javascript"></script>
+    <script src="${
+      process.env.EXPO_PUBLIC_TEXT_DEPTHMAPPER_SCRIPT_URL
+    }" type="text/javascript"></script>
+    ${
+      inputText
+        ? `<img id="stereogram" src />`
+        : '<div><p>You have not entered your hidden word.</p><p>Please go back and try again.</p></div>'
+    }
+    <script>
+      ${
+        inputText
+          ? `
+        Stereogram.render({
+          el: 'stereogram',
+          depthMapper: new Stereogram.TextDepthMapper('${inputText}'),
+        });
+      `
+          : ''
+      }
+    </script>
+  </body>
+</html>
+`;
+
+  return (
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+      <View style={styles.webviewContainer}>
+        <TouchableWithoutFeedback
+          style={styles.touchable}
+          onLongPress={() =>
+            Alert.alert(
+              'Image Options',
+              'Choose an option',
+              [
+                { text: 'Save', onPress: () => console.log('Save Pressed') },
+                {
+                  text: 'Exit',
+                  onPress: () => console.log('Exit Pressed'),
+                  style: 'cancel',
+                },
+              ],
+              { cancelable: true }
+            )
+          }
+        >
+          <WebView
+            key={inputText}
+            source={{ html: htmlContent }}
+            style={styles.webview}
+            javaScriptEnabled={true}
+          />
+        </TouchableWithoutFeedback>
+      </View>
+    </SafeAreaView>
   );
-} 
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
-    alignItems: 'center',
-    justifyContent: 'top',
+    backgroundColor: '#161616',
   },
-  resultImage: {
-    width: '90%',
-    height: '95%',
+  webviewContainer: {
+    flex: 1,
+  },
+  webview: {
+    flex: 1,
+  },
+  placeholder: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
-export default ResultsPage
+export default ResultsPage;
