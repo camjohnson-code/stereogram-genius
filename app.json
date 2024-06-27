@@ -11,8 +11,12 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "permissions": ["CAMERA_ROLL"],
     "ios": {
       "supportsTablet": true
+    },
+    "infoPlist": {
+      "NSPhotoLibraryAddUsageDescription": "Your description for why you need access to save photos"
     },
     "android": {
       "adaptiveIcon": {

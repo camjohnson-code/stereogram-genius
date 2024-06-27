@@ -1,15 +1,30 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   StyleSheet,
   TouchableWithoutFeedback,
   View,
   Alert,
+  Button,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
+import ViewShot from 'react-native-view-shot';
+import * as MediaLibrary from 'expo-media-library';
 
 function ResultsPage({ route, inputText }) {
-  // const { selectedPhoto } = route.params;
+  const viewShotRef = useRef(null);
+  const [permission, setPermission] = useState(false)
+  useEffect(() => {
+    (async () => {
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Sorry, we need camera roll permissions to make this work!');
+      }
+      else{
+        setPermission(true)
+      }
+    })();
+  }, [permission]);
   const htmlContent = `
   <html>
     <head>
@@ -66,26 +81,49 @@ function ResultsPage({ route, inputText }) {
   </html>
 `;
 
+const onCapture = async () => {
+  if (viewShotRef.current) {
+    const uri = await viewShotRef.current.capture();
+    const asset = await MediaLibrary.createAssetAsync(uri);
+    await MediaLibrary.saveToLibraryAsync(asset.uri);
+  }
+};
+  const handleLongPress = () => {
+    Alert.alert(
+      'Image Options',
+      'Choose an option',
+      [
+        { text: 'Save', onPress: saveImage },
+        {
+          text: 'Exit',
+          onPress: () => console.log('Exit Pressed'),
+          style: 'cancel',
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const saveImage = async () => {
+    if (viewShotRef.current) {
+      try {
+        const uri = await viewShotRef.current.capture();
+        const asset = await MediaLibrary.createAssetAsync(uri);
+        await MediaLibrary.saveToLibraryAsync(asset.uri);
+        Alert.alert('Success', 'Image saved to camera roll');
+      } catch (error) {
+        console.error(error);
+        Alert.alert('Error', 'Failed to save image');
+      }
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-      <View style={styles.webviewContainer}>
+      <ViewShot ref={viewShotRef} style={styles.webviewContainer}>
         <TouchableWithoutFeedback
           style={styles.touchable}
-          onLongPress={() =>
-            Alert.alert(
-              'Image Options',
-              'Choose an option',
-              [
-                { text: 'Save', onPress: () => console.log('Save Pressed') },
-                {
-                  text: 'Exit',
-                  onPress: () => console.log('Exit Pressed'),
-                  style: 'cancel',
-                },
-              ],
-              { cancelable: true }
-            )
-          }
+          onLongPress={handleLongPress}
         >
           <WebView
             key={inputText}
@@ -94,7 +132,7 @@ function ResultsPage({ route, inputText }) {
             javaScriptEnabled={true}
           />
         </TouchableWithoutFeedback>
-      </View>
+      </ViewShot>
     </SafeAreaView>
   );
 }
@@ -108,6 +146,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   webview: {
+    flex: 1,
+  },
+  touchable: {
     flex: 1,
   },
 });
