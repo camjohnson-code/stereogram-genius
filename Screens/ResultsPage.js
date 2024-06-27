@@ -11,20 +11,21 @@ import { WebView } from 'react-native-webview';
 import ViewShot from 'react-native-view-shot';
 import * as MediaLibrary from 'expo-media-library';
 
-function ResultsPage({ route, inputText }) {
+function ResultsPage({ inputText }) {
   const viewShotRef = useRef(null);
-  const [permission, setPermission] = useState(false)
+  const [permission, setPermission] = useState(false);
+
   useEffect(() => {
     (async () => {
       const { status } = await MediaLibrary.requestPermissionsAsync();
       if (status !== 'granted') {
-        alert('Sorry, we need camera roll permissions to make this work!');
-      }
-      else{
-        setPermission(true)
+        Alert.alert('Sorry, we need camera roll permissions to make this work!');
+      } else {
+        setPermission(true);
       }
     })();
-  }, [permission]);
+  }, []);
+
   const htmlContent = `
   <html>
     <head>
@@ -62,7 +63,7 @@ function ResultsPage({ route, inputText }) {
       <script src="${process.env.EXPO_PUBLIC_TEXT_DEPTHMAPPER_SCRIPT_URL}" type="text/javascript"></script>
       ${
         inputText
-          ? '<img id="stereogram" src />'
+          ? '<img id="stereogram" src="" />'
           : '<div><p>You have not entered your hidden word or picked a pattern.</p><p>Please go back and try again.</p></div>'
       }
       <script>
@@ -81,19 +82,29 @@ function ResultsPage({ route, inputText }) {
   </html>
 `;
 
-const onCapture = async () => {
-  if (viewShotRef.current) {
-    const uri = await viewShotRef.current.capture();
-    const asset = await MediaLibrary.createAssetAsync(uri);
-    await MediaLibrary.saveToLibraryAsync(asset.uri);
-  }
-};
+  const onCapture = async () => {
+    if (viewShotRef.current) {
+      try {
+        const uri = await viewShotRef.current.capture();
+        console.log('Captured URI:', uri);
+
+        const fileUri = uri.includes('file://') ? uri : `file://${uri}`;
+        const asset = await MediaLibrary.createAssetAsync(fileUri);
+        await MediaLibrary.saveToLibraryAsync(asset.uri);
+        Alert.alert('Success', 'Image saved to camera roll');
+      } catch (error) {
+        console.error('Failed to capture and save the image:', error);
+        Alert.alert('Error', 'Failed to save image');
+      }
+    }
+  };
+
   const handleLongPress = () => {
     Alert.alert(
       'Image Options',
       'Choose an option',
       [
-        { text: 'Save', onPress: saveImage },
+        { text: 'Save', onPress: onCapture },
         {
           text: 'Exit',
           onPress: () => console.log('Exit Pressed'),
@@ -104,23 +115,13 @@ const onCapture = async () => {
     );
   };
 
-  const saveImage = async () => {
-    if (viewShotRef.current) {
-      try {
-        const uri = await viewShotRef.current.capture();
-        const asset = await MediaLibrary.createAssetAsync(uri);
-        await MediaLibrary.saveToLibraryAsync(asset.uri);
-        Alert.alert('Success', 'Image saved to camera roll');
-      } catch (error) {
-        console.error(error);
-        Alert.alert('Error', 'Failed to save image');
-      }
-    }
-  };
-
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-      <ViewShot ref={viewShotRef} style={styles.webviewContainer}>
+      <ViewShot
+        ref={viewShotRef}
+        style={styles.webviewContainer}
+        options={{ format: 'jpg', quality: 0.9 }}
+      >
         <TouchableWithoutFeedback
           style={styles.touchable}
           onLongPress={handleLongPress}
